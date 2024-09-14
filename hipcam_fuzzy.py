@@ -19,14 +19,13 @@ def test_url_subprocess(url):
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10
         )
         if result.returncode == 0:
-            print(f"Conexión exitosa: {url}")
+            return f"Conexión exitosa: {url}"
         else:
-            print(f"Fallo la conexión: {url}")
-            print(result.stderr.decode())  # Mostrar más detalles del error
+            return f"Fallo la conexión: {url}\n{result.stderr.decode()}"
     except subprocess.TimeoutExpired:
-        print(f"Fallo por tiempo de espera: {url}")
+        return f"Fallo por tiempo de espera: {url}"
     except Exception as e:
-        print(f"Error inesperado con {url}: {e}")
+        return f"Error inesperado con {url}: {e}"
 
 # Solicitar al usuario la IP de la cámara
 def get_camera_ip():
@@ -41,5 +40,8 @@ ip = get_camera_ip()
 
 # Generar combinaciones de URLs y probarlas
 urls = generate_urls(ip)
-for url in urls:
-    test_url_subprocess(url)
+results = [test_url_subprocess(url) for url in urls]
+
+# Mostrar resultados después de probar todas las URLs
+for result in results:
+    print(result)
